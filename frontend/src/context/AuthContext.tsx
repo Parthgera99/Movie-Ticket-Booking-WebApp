@@ -35,9 +35,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } catch (err: any) {
         if (err.response?.status === 401) {
           try {
-            await api.post("/auth/refresh"); // refresh accessToken
+            await api.post("/auth/refresh-token"); // refresh accessToken
+            // wait a tiny bit before fetching user again
+            await new Promise((resolve) => setTimeout(resolve, 50)); 
             const res2 = await api.get("/auth/me");
-            setUser(res2.data.user);
+            setUser(res2.data); // use res2.data, not res2.data.user
           } catch {
             setUser(null);
           }
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setLoading(false);
       }
     };
+
 
     fetchUser();
   }, []);

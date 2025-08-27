@@ -32,19 +32,24 @@ export default function Home() {
         ) : (
           <div className="grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {movies.map((movie) => (
-              <Link key={movie._id} href={`/movies/${movie._id}`}>
+              <Link
+                key={movie._id}
+                href={`/movies/${movie._id}`}
+                className="group transform transition-transform duration-300 hover:scale-105"
+              >
                 <img
                   src={movie.posterUrl || "/file.svg"}
                   alt={movie.title}
-                  className="w-full h-72 object-cover rounded-xl hover:scale-105 transition"
+                  className="w-full h-72 object-cover rounded-xl"
                 />
-                <p className="text-center mt-1">{movie.title}</p>
-                {movie.genre && movie?.genre.map((genre) => (
-                    <p key={genre} className="text-sm text-gray-500">
-                      {genre}
-                    </p>
-                  )) }
+                <p className="text-center mt-1 font-medium">{movie.title}</p>
+                {movie.genre && movie.genre.length > 0 && (
+                  <p className="text-center text-sm text-gray-500">
+                    {movie.genre.slice(0, 3).join(" / ")}
+                  </p>
+                )}
               </Link>
+
             ))}
           </div>
         )}
