@@ -6,7 +6,8 @@ const screenSchema = new mongoose.Schema({
   seatLayout: {
     rows: { type: Number, default: 10 },
     cols: { type: Number, default: 10 }
-  }
+  },
+  shows: [{ type: mongoose.Schema.Types.ObjectId, ref: "Show" }]
 }, { timestamps: true });
 
 export default mongoose.model("Screen", screenSchema);

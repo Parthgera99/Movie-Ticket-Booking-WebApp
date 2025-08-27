@@ -4,6 +4,11 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
+import cinemaRoutes from "./routes/cinemaRoutes.js"
+import movieRoutes from "./routes/movieRoutes.js";
+import screenRoutes from "./routes/screenRoutes.js";
+import showRoutes from "./routes/showRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 dotenv.config({
     path: "./.env",
@@ -15,6 +20,11 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/cinema",cinemaRoutes);
+app.use("/api/movie", movieRoutes);
+app.use("/api/screen", screenRoutes);
+app.use("/api/show", showRoutes);
+app.use("/api/booking", bookingRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected"))
