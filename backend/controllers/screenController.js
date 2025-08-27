@@ -10,7 +10,7 @@ export const createScreen = async (req, res) => {
     if (!cinema) return res.status(404).json({ message: "Cinema not found" });
 
     const screen = await Screen.create({ cinema: cinemaId, name, seatLayout });
-    // cinema.screens.push(screen._id);
+    cinema.screens.push(screen._id);
     await cinema.save();
 
     res.status(201).json(screen);

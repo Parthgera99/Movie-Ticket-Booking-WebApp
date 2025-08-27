@@ -24,7 +24,8 @@ const cinemaSchema = new mongoose.Schema({
       type: [Number], // [longitude, latitude]
       required: true,
     },
-  }
+  },
+  screens: [{ type: mongoose.Schema.Types.ObjectId, ref: "Screen" }],
 }, { timestamps: true });
 
 cinemaSchema.index({ location: "2dsphere" });

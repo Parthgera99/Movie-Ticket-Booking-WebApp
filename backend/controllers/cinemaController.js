@@ -1,5 +1,7 @@
 import Cinema from "../models/Cinema.model.js";
+import Show from "../models/Show.model.js";
 import Screen from "../models/Screen.model.js";
+import mongoose from "mongoose";
 
 // Create Cinema (Admin Only)
 export const createCinema = async (req, res) => {
@@ -20,20 +22,60 @@ export const createCinema = async (req, res) => {
   }
 };
 
-// GET /cinema/list?city=ambala&area=sector-7&street=sector-7
+// GET /cinema/list?city=Ambala&movieId=xxx
 export const getCinemasByCity = async (req, res) => {
   try {
-    const { city, area, street } = req.query;
+    const { city, movieId } = req.query;
 
-    const query = {};
-    if (city) query["address.city"] = city;
-    if (area) query["address.area"] = area;
-    if (street) query["address.street"] = street;
+    if (!city || !movieId)
+      return res.status(400).json({ message: "City and movieId required" });
 
-    const cinemas = await Cinema.find(query).select("name address location");
-    res.json(cinemas);
+    const movieObjectId = mongoose.Types.ObjectId.createFromHexString(movieId);
+
+    // Step 1: Get cinemas in the city
+    const cinemas = await Cinema.find({ 
+      "address.city": { $regex: new RegExp(`^${city}$`, "i") } 
+    });
+
+
+    console.log(cinemas)
+
+    // Step 2: For each cinema, get screens that have shows for this movie
+    const result = await Promise.all(
+      cinemas.map(async (cinema) => {
+        // Populate shows for each screen
+        const screens = await Screen.find({ cinema: cinema._id }).populate({
+          path: "shows",
+          match: { movie: movieObjectId, startTime: { $gte: new Date() } },
+          options: { sort: { startTime: 1 } },
+        });
+
+        console.log("screens", screens)
+
+        // Filter out screens with no shows for this movie
+        const screensWithShows = screens
+          .filter((screen) => screen.shows && screen.shows.length > 0)
+          .map((screen) => screen.toObject());
+
+        if (screensWithShows.length === 0) return null;
+
+        return {
+          _id: cinema._id,
+          name: cinema.name,
+          address: cinema.address,
+          location: cinema.location,
+          screens: screensWithShows,
+        };
+      })
+    );
+
+    // Return only cinemas that have screens with shows
+    res.json(result.filter(Boolean));
   } catch (err) {
-    res.status(500).json({ message: "Error fetching cinemas", error: err.message });
+    console.error(err);
+    res
+      .status(500)
+      .json({ message: "Error fetching cinemas", error: err.message });
   }
 };
 
