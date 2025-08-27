@@ -252,7 +252,7 @@ export default function BookTicketsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold text-red-600 mb-6">Select a Show for <p className="text-black inline">{movie?.title}</p></h1>
+      <h1 className="text-3xl font-bold text-red-600 mb-6">Select a Show • <p className="text-black inline">{movie?.title}</p></h1>
 
       {cinemas.length === 0 ? (
         <p className="text-center text-gray-600">

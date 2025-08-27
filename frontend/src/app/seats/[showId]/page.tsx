@@ -8,7 +8,10 @@ import { useAuth } from "@/context/AuthContext";
 
 type ShowDto = {
   _id: string;
-  movie: string;
+  movie: {
+    _id: string;
+    title: string;   // <- add this (and whatever else you return in movie)
+  };
   screen: {
     _id: string;
     name: string;
@@ -34,7 +37,7 @@ export default function SeatSelectionPage() {
       setLoading(true);
       try {
         // expects: GET /show/:id -> returns show with populated screen (seatLayout) and bookedSeats
-        const res = await axios.get(`/show/${params.showId}`);
+        const res = await axios.get(`/show/details/${params.showId}`);
         setShow(res.data);
       } catch (e) {
         console.error(e);
@@ -99,7 +102,7 @@ export default function SeatSelectionPage() {
   return (
     <div className="max-w-5xl mx-auto px-6 py-10">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Select Seats</h1>
+        <h1 className="text-2xl font-bold">Select Seats • {show.movie.title} </h1>
         <p className="text-gray-600">
           {show.screen.name} • {new Date(show.startTime).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
         </p>
@@ -125,7 +128,7 @@ export default function SeatSelectionPage() {
                 onClick={() => toggleSeat(seat)}
                 disabled={booked}
                 className={[
-                  "h-10 min-w-10 rounded-md border text-sm",
+                  "cursor-pointer h-10 min-w-10 rounded-md border text-sm",
                   booked
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : active
@@ -169,7 +172,7 @@ export default function SeatSelectionPage() {
           </div>
 
           <Button
-            className="bg-red-600 hover:bg-red-700 text-white"
+            className="cursor-pointer bg-red-600 hover:bg-red-700 text-white"
             onClick={proceed}
             disabled={selected.length === 0 || posting}
           >
