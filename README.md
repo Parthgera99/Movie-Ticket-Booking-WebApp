@@ -22,17 +22,25 @@ Users can browse movies, check cinema showtimes, select seats, and complete book
 
 /backend
 ├── models/ # Mongoose models (Movie, Cinema, Screen, Show, Booking)
+
 ├── routes/ # Express routes for movies, cinemas, shows, bookings
+
 ├── controllers/ # Controllers for handling API logic
+
 └── server.js # Express server setup
 
 /frontend (Next.js)
 ├── app/
 │ ├── page.tsx # Home page (movie listing)
+
 │ ├── movie/[id]/page.tsx # Movie details + "Book Tickets"
+
 │ ├── book/[id]/page.tsx # Cinema + seat selection
+
 │ ├── checkout/[id]/page.tsx # Checkout & payment
+
 │ └── thank-you/[id]/page.tsx # Booking confirmation
+
 └── components/ # Reusable UI components
 
 
